@@ -1,0 +1,11 @@
+{
+  "key.deserializer":"org.apache.kafka.common.serialization.StringDeserializer",
+  "value.deserializer":"org.apache.kafka.common.serialization.StringDeserializer",
+  "enable.auto.commit":"true",
+  "group.id":"ttt",
+  "bootstrap.servers":"192.168.240.42:9092,192.168.240.43:9092,192.168.240.44:9092",
+  "auto.offset.reset":"earliest",
+  "max.poll.records":"10",
+  "session.timeout.ms":"30000",
+  "heartbeat.interval.ms":"30000"
+}

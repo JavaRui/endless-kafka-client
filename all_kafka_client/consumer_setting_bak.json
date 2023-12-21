@@ -1,0 +1,9 @@
+{
+  "key.deserializer":"org.apache.kafka.common.serialization.StringDeserializer",
+  "value.deserializer":"org.apache.kafka.common.serialization.StringDeserializer",
+  "enable.auto.commit":"true@@false",
+  "group.id":"ttt",
+  "bootstrap.servers":"192.168.240.42:9092,192.168.240.43:9092,192.168.240.44:9092@@192.168.49.7:9092,192.168.49.10:9092,192.168.49.24:9092@@192.168.48.186:9092,192.168.48.187:9092,192.168.48.188:9092",
+  "auto.offset.reset":"earliest@@latest",
+  "max.poll.records":"10@@20"
+}
