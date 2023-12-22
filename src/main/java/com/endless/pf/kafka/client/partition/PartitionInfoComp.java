@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.endless.pf.kafka.client.utils.KafkaUtil;
 import com.endless.tools.swt.base.YtComposite;
 import com.endless.tools.swt.sc.BaseScPart;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
@@ -15,8 +16,8 @@ import java.util.List;
 /**
  * partition设置面板
  */
+@Slf4j
 public class PartitionInfoComp extends BaseScPart<PartitionInfoVo,List<PartitionInfoVo>> {
-    Logger logger = LoggerFactory.getLogger(PartitionInfoComp.class);
 
     public PartitionInfoComp(Composite parent , int style) {
         super(parent,style);
@@ -27,7 +28,6 @@ public class PartitionInfoComp extends BaseScPart<PartitionInfoVo,List<Partition
         input(partitionInfoVoList);
 
     }
-
 
     /**
      * 获取被选择的partition

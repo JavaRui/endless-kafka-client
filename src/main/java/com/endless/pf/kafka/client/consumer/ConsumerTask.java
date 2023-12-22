@@ -42,7 +42,7 @@ public class ConsumerTask extends Thread {
 
         try{
             //是否不需要设置分区
-            if(taskVo.isUsePartition() ){
+            if(taskVo.isUsePartitionBtn() ){
                 List<TopicPartition> list = new ArrayList<>();
                 List<PartitionInfoVo> topicList = taskVo.getPartitionInfoList();
                 if(topicList.isEmpty()){
@@ -50,22 +50,19 @@ public class ConsumerTask extends Thread {
                     return ;
                 }
                 topicList.forEach(topicInfo -> {
-                    TopicPartition partition0 = new TopicPartition(taskVo.getTopic(), topicInfo.getPartitionNo());
+                    TopicPartition partition0 = new TopicPartition(taskVo.getTopicText(), topicInfo.getPartitionNo());
                     list.add(partition0);
                 });
                 consumer.assign(list);
 
                 topicList.forEach(topicInfo -> {
-                    TopicPartition partition0 = new TopicPartition(taskVo.getTopic(), topicInfo.getPartitionNo());
+                    TopicPartition partition0 = new TopicPartition(taskVo.getTopicText(), topicInfo.getPartitionNo());
                     //暂时看来只会对单次的consumer起作用，可以在此次指定到特定的offset
                     //但是，每次使用完，lastOffset都会跑到最后的offset中。也就是说。
                     //使用前：
                     //TopicInfo{partitionNo=0, offset=0, allSize=84, lag=0, change=false, topic='taxing'}
                     //然后虽然我们只指定了某个partition的offset，但是使用之后
                     //TopicInfo{partitionNo=0, offset=84, allSize=84, lag=0, change=false, topic='taxing'}
-                    //TopicInfo{partitionNo=1, offset=84, allSize=84, lag=0, change=false, topic='taxing'}
-                    //TopicInfo{partitionNo=2, offset=84, allSize=84, lag=0, change=false, topic='taxing'}
-                    //TopicInfo{partitionNo=3, offset=84, allSize=84, lag=0, change=false, topic='taxing'}
                     //所有的partition的offset都会自动偏移到最后。
                     consumer.seek(partition0, topicInfo.getOffset());
 //                    consumer.seekToBeginning(Arrays.asList(partition0));
@@ -73,7 +70,7 @@ public class ConsumerTask extends Thread {
 
             }else{
                 //正常订阅
-                consumer.subscribe(Arrays.asList(taskVo.getTopic()));
+                consumer.subscribe(Arrays.asList(taskVo.getTopicText()));
             }
         }catch (Exception e){
             addResult(e.getLocalizedMessage());
@@ -103,25 +100,30 @@ public class ConsumerTask extends Thread {
 
             for (ConsumerRecord<String, String> record : records) {
                 flag = true;
-                if(taskVo.isShowDesc()){
+                if(taskVo.isShowDescBtn()){
                     String format = String.format("offset = %d, key = %s, partition = %s", record.offset(), record.key(), record.partition());
                     String format2 = String.format("offset = %d, key = %s, value = %s, partition = %s", record.offset(), record.key(), record.value(), record.partition());
-                    FileUtil.writeString(format2,SwtVoid.getUserDir()+taskVo.getTopic()+"-kafka.txt","UTF-8");
+                    FileUtil.writeString(format2,SwtVoid.getUserDir()+taskVo.getTopicText()+"-kafka.txt","UTF-8");
                     addResult(format2);
-                    System.out.printf("offset = %d, key = %s,  partition = %s%n", record.offset(), record.key(), record.partition());
+//                    System.out.printf("offset = %d, key = %s,  partition = %s%n", record.offset(), record.key(), record.partition());
                 }else{
                     String format = String.format("offset = %d, key = %s,  partition = %s", record.offset(), record.key(), record.partition());
-                    FileUtil.writeString(format,SwtVoid.getUserDir()+taskVo.getTopic()+"-kafka.txt","UTF-8");
+                    FileUtil.writeString(format,SwtVoid.getUserDir()+taskVo.getTopicText()+"-kafka.txt","UTF-8");
                     addResult(format);
-                    System.out.printf("offset = %d, key = %s,  partition = %s%n", record.offset(), record.key(),  record.partition());
+//                    System.out.printf("offset = %d, key = %s,  partition = %s%n", record.offset(), record.key(),  record.partition());
                 }
 
             }
 
-            if(!taskVo.isLoopPoll() && flag){
+            if(!taskVo.isAlwaysPollBtn() && flag){
 //            if(!taskVo.isLoopPoll()){
                 stopPoll = true;
                 addResult("停止拉取，仅获取一次");
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
         }

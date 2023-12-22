@@ -8,7 +8,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.endless.pf.kafka.client.partition.PartitionInfoComp;
 import com.endless.tools.swt.base.SwtVoid;
 import com.endless.tools.swt.base.YtComposite;
-import com.endless.tools.swt.ui.text.YtText;
+import com.endless.tools.swt.save.UiAndField;
+import com.endless.tools.swt.save.UiAndFieldUtils;
 import com.endless.tools.swt.util.LayoutUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -25,12 +26,17 @@ public class KafkaClientConsumer extends KafkaClientUiBase implements ShowResult
 
 
     private PartitionInfoComp partitionInfoComp;
-    private Button isPartitionBtn;
+    @UiAndField(getMethodName = "getSelection",setMethodName = "setSelection")
+    private Button usePartitionBtn;
+    @UiAndField(getMethodName = "getSelection",setMethodName = "setSelection")
     private Button alwaysPollBtn;
-    private Button descBtn;
+    @UiAndField(getMethodName = "getSelection",setMethodName = "setSelection")
+    private Button showDescBtn;
+    @UiAndField(getMethodName = "getText",setMethodName = "setText")
+    private Text topicText;
 
     private ConsumerTask consumerTask;
-    private YtComposite exComp;
+
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
 
     public static void main(String[] args) {
@@ -53,7 +59,7 @@ public class KafkaClientConsumer extends KafkaClientUiBase implements ShowResult
 
         sendComp.createLabel("topic:");
 
-        Text topicText = new Text(sendComp,SWT.BORDER);
+        topicText = new Text(sendComp,SWT.BORDER);
         topicText.setLayoutData(LayoutUtil.createFillGridNoVer(1));
         topicText.setText("taxing");
 
@@ -61,8 +67,8 @@ public class KafkaClientConsumer extends KafkaClientUiBase implements ShowResult
         alwaysPollBtn.setText("一直获取");
 
 
-        descBtn = new Button(sendComp,SWT.CHECK);
-        descBtn.setText("输出内容详情");
+        showDescBtn = new Button(sendComp,SWT.CHECK);
+        showDescBtn.setText("输出内容详情");
 
 
         final Button sendBtn = new Button(sendComp,SWT.PUSH);
@@ -76,11 +82,9 @@ public class KafkaClientConsumer extends KafkaClientUiBase implements ShowResult
 
                 sendBtn.setSelection(false);
 
-                ConsumerTaskVo  vo = new ConsumerTaskVo();
-                vo.setLoopPoll(alwaysPollBtn.getSelection());
-                vo.setShowDesc(descBtn.getSelection());
-                vo.setTopic(topicText.getText());
-                vo.setUsePartition(isPartitionBtn.getSelection());
+                JSONObject jsonByUi = UiAndFieldUtils.getJsonByUi(KafkaClientConsumer.this);
+                ConsumerTaskVo  vo = JSONObject.toJavaObject(jsonByUi, ConsumerTaskVo.class);
+
                 if(partitionInfoComp !=null) {
                     vo.setPartitionInfoList(partitionInfoComp.output());
                 }
@@ -137,22 +141,22 @@ public class KafkaClientConsumer extends KafkaClientUiBase implements ShowResult
         partitionBtn.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-            isPartitionBtn.setSelection(partitionBtn.getSelection());
+            usePartitionBtn.setSelection(partitionBtn.getSelection());
             if(partitionBtn.getSelection()){
                 partitionInfoComp.setData(getJsonByItemList(),topicText.getText());
                 LayoutUtil.setExclude(partitionInfoComp,true);
             }else{
                 LayoutUtil.setExclude(partitionInfoComp,false);
             }
-            partitionInfoComp.getParent().getParent().layout();
-            partitionInfoComp.getParent().getParent().getParent().layout();
-            layout();
+//            partitionInfoComp.getParent().getParent().layout();
+//            partitionInfoComp.getParent().getParent().getParent().layout();
+//            layout();
 
             }
         });
 
-        isPartitionBtn = new Button(partitionComp,SWT.CHECK);
-        isPartitionBtn.setText("启用partition选择");
+        usePartitionBtn = new Button(partitionComp,SWT.CHECK);
+        usePartitionBtn.setText("启用partition选择");
 
 
         partitionInfoComp = new PartitionInfoComp(composite,SWT.BORDER);

@@ -6,36 +6,36 @@ import java.util.List;
 
 public class ConsumerTaskVo {
 
-    private String topic ;
-    private boolean loopPoll;
-    private boolean showDesc;
+    private String topicText;
+    private boolean alwaysPollBtn;
+    private boolean showDescBtn;
     private List<PartitionInfoVo> partitionInfoVoList;
-    private boolean usePartition = false;
+    private boolean usePartitionBtn = false;
 
 
-    public String getTopic() {
-        return topic;
+    public String getTopicText() {
+        return topicText;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
+    public void setTopicText(String topicText) {
+        this.topicText = topicText;
     }
 
 
-    public boolean isLoopPoll() {
-        return loopPoll;
+    public boolean isAlwaysPollBtn() {
+        return alwaysPollBtn;
     }
 
-    public void setLoopPoll(boolean loopPoll) {
-        this.loopPoll = loopPoll;
+    public void setAlwaysPollBtn(boolean alwaysPollBtn) {
+        this.alwaysPollBtn = alwaysPollBtn;
     }
 
-    public boolean isShowDesc() {
-        return showDesc;
+    public boolean isShowDescBtn() {
+        return showDescBtn;
     }
 
-    public void setShowDesc(boolean showDesc) {
-        this.showDesc = showDesc;
+    public void setShowDescBtn(boolean showDescBtn) {
+        this.showDescBtn = showDescBtn;
     }
 
     public List<PartitionInfoVo> getPartitionInfoList() {
@@ -47,20 +47,20 @@ public class ConsumerTaskVo {
 
     }
 
-    public boolean isUsePartition() {
-        return usePartition;
+    public boolean isUsePartitionBtn() {
+        return usePartitionBtn;
     }
 
-    public void setUsePartition(boolean usePartition) {
-        this.usePartition = usePartition;
+    public void setUsePartitionBtn(boolean usePartitionBtn) {
+        this.usePartitionBtn = usePartitionBtn;
     }
 
     @Override
     public String toString() {
         return "ConsumerTaskVo{" +
-                "topic='" + topic + '\'' +
-                ", loopPoll=" + loopPoll +
-                ", showDesc=" + showDesc +
+                "topic='" + topicText + '\'' +
+                ", loopPoll=" + alwaysPollBtn +
+                ", showDesc=" + showDescBtn +
                 ", topicList=" + partitionInfoVoList +
                 '}';
     }

@@ -1,7 +1,6 @@
 package com.endless.pf.kafka.client.commonui;
 
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.io.file.FileWriter;
@@ -10,8 +9,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.endless.tools.swt.base.SwtVoid;
 import com.endless.tools.swt.base.YtComposite;
 import com.endless.tools.swt.log.SimpleLogComp;
-import com.endless.tools.swt.mgr.MsgDlgMgr;
-import com.endless.tools.swt.ui.text.YtText;
 import com.endless.tools.swt.util.LayoutUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -25,10 +22,18 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 生产者和消费者的基础页面
+ * */
 public abstract  class KafkaClientUiBase extends YtComposite {
 
-    protected List<ParamItem> itemList = new ArrayList<>();
-
+    /**
+     * 所有的入参的item的列表
+     * */
+    protected List<ParamItem> paramItemList = new ArrayList<>();
+    /**
+     * 日志输出框的的comp
+     * */
     protected SimpleLogComp simpleLogComp ;
 
     public KafkaClientUiBase(Composite parent, int style) {
@@ -70,7 +75,7 @@ public abstract  class KafkaClientUiBase extends YtComposite {
                 item.setLayoutData(fillGrid);
             }
             item.setText(key+"",value+"");
-            itemList.add(item);
+            paramItemList.add(item);
 
         });
 
@@ -90,9 +95,6 @@ public abstract  class KafkaClientUiBase extends YtComposite {
 
         });
     }
-
-
-
     public static  Map sortByValue2(Map map) {
         List list = new LinkedList<>(map.entrySet());
         Collections.sort(list, new Comparator<Map.Entry>() {
@@ -144,7 +146,6 @@ public abstract  class KafkaClientUiBase extends YtComposite {
         YtComposite btnComp = new YtComposite(composite, SWT.BORDER);
         btnComp.setGd(true,false);
 
-
         Button saveBtn = new Button(btnComp,SWT.PUSH);
         saveBtn.setText("保存参数");
         saveBtn.addSelectionListener(new SelectionAdapter() {
@@ -158,8 +159,6 @@ public abstract  class KafkaClientUiBase extends YtComposite {
 
                     FileWriter fileWriter = new FileWriter(savePath,"utf-8");
                     fileWriter.write(jsonByItemList.toString());
-
-//                    AutoSave.write(jsonByItemList.toString(), savePath,true,"utf-8");
 
                     addResult("保存成功");
                 }catch (Exception e1){
@@ -272,7 +271,7 @@ public abstract  class KafkaClientUiBase extends YtComposite {
      */
     protected JSONObject getJsonByItemList(){
         JSONObject json = new JSONObject();
-        for (ParamItem paramItem : itemList) {
+        for (ParamItem paramItem : paramItemList) {
             json.putAll(paramItem.getJsonValue());
         }
 
@@ -281,7 +280,7 @@ public abstract  class KafkaClientUiBase extends YtComposite {
 
     protected JSONObject saveJsonByItemList(){
         JSONObject json = new JSONObject();
-        for (ParamItem paramItem : itemList) {
+        for (ParamItem paramItem : paramItemList) {
             json.putAll(paramItem.getSaveJson());
         }
 
